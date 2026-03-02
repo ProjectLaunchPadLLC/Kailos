@@ -1,65 +1,16 @@
-# =============================================================================
-# GitHub Action: Auto-Build Kailos-Quantum Repository
-# =============================================================================
-# Triggers: When any file is added to the "Repo" folder
-# Purpose: Validates repository structure, installs dependencies,
-#          and runs a build test to ensure the holographic architecture
-#          is functioning correctly.
-# =============================================================================
-
-name: Build Kailos-Quantum on File Add
-
-on:
-  push:
-    paths:
-      - 'Repo/**'  # Trigger when any file is added to Repo folder
-  workflow_dispatch:  # Allow manual triggering for testing
-
-jobs:
-  validate-and-build:
-    name: Validate & Build Holographic Architecture
-    runs-on: ubuntu-latest
-    
-    # Container with GPU support (optional - can run CPU-only)
-    container:
-      image: python:3.10-slim
-    
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for proper validation
-      
-      # Step 2: Display triggered files
-      - name: Display Added Files
-        run: |
-          echo "📂 Files added to Repo folder:"
-          git diff --name-only --diff-filter=A HEAD^ HEAD | grep "^Repo/" || echo "No new files (manual trigger)"
-          echo "======================================"
-      
-      # Step 3: Set up Python
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-      
-      # Step 4: Install system dependencies
-      - name: Install System Dependencies
-        run: |
-          apt-get update && apt-get install -y \
-            build-essential \
-            curl \
-            git \
-            && rm -rf /var/lib/apt/lists/*
-      
-      # Step 5: Create directory structure from Repo folder
-      - name: Create Kailos-Quantum Directory Structure
-        run: |
-          echo "🔧 Creating Kailos-Quantum directory structure..."
-          
-          # Create target directory
+your-repo/
+├── .github/
+│   └── workflows/
+│       └── build-on-file-add.yml
+├── Repo/
+│   ├── core/
+│   │   └── llm.py
+│   ├── memory/
+│   │   └── holographic.py
+│   ├── visuals/
+│   │   └── dashboard.py
+│   └── main.py
+└── README.md          # Create target directory
           mkdir -p /tmp/kailos_build/kailos_quantum
           
           # If Repo folder exists and contains files, copy them to the build directory
